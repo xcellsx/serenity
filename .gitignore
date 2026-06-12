@@ -5,9 +5,13 @@ node_modules/
 
 # Expo
 .expo/
+.expo-shared/
 dist/
 web-build/
 expo-env.d.ts
+
+# Expo tooling scratch (route checks, type refresh, etc.)
+.expo-*/
 
 # Native
 .kotlin/
@@ -25,19 +29,36 @@ expo-env.d.ts
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+*.log
 
-# macOS
+# macOS / Windows
 .DS_Store
+Thumbs.db
 *.pem
 
-# local env files
-.env*.local
+# env & secrets — never commit these
+.env
+.env.*
+!.env.example
+supabase/.env
+supabase/.env.*
+
+# Supabase CLI local state
+supabase/.temp/
+supabase/.branches/
+
+# Vercel local project link
+.vercel/
 
 # typescript
 *.tsbuildinfo
 
-example
-
 # generated native folders
 /ios
 /android
+
+# editor / local tooling
+.idea/
+.vscode/
+.cursor/
+.claude/

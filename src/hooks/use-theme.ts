@@ -3,12 +3,17 @@
  * https://docs.expo.dev/guides/color-schemes/
  */
 
-import { Colors } from '@/constants/theme';
+import { Colors, HighContrastColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAccessibility } from '@/lib/motion-context';
 
 export function useTheme() {
   const scheme = useColorScheme();
-  const theme = scheme === 'unspecified' ? 'light' : scheme;
+  const { highContrast } = useAccessibility();
+  const mode = scheme === 'dark' ? 'dark' : 'light';
+  const base = Colors[mode];
 
-  return Colors[theme];
+  if (!highContrast) return base;
+
+  return { ...base, ...HighContrastColors[mode] };
 }
