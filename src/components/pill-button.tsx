@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, type ViewStyle } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, type StyleProp, type ViewStyle } from 'react-native';
 
 import { GlassSurface } from '@/components/glass-surface';
 import { Fonts, FontSizes, Palette, Radii } from '@/constants/theme';
@@ -11,7 +11,7 @@ type Props = {
   variant?: 'glass' | 'solid';
   /** Glass pill with accent border — for toggles where the active state stays glassy. */
   selected?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 };
 
 export function PillButton({ label, onPress, variant = 'glass', selected, style }: Props) {
@@ -25,6 +25,7 @@ export function PillButton({ label, onPress, variant = 'glass', selected, style 
           styles.shadow,
           styles.pill,
           styles.solid,
+          Platform.OS === 'web' && webPressable,
           { opacity: pressed ? 0.85 : 1 },
           style,
         ]}>
@@ -36,7 +37,7 @@ export function PillButton({ label, onPress, variant = 'glass', selected, style 
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.shadow, { opacity: pressed ? 0.9 : 1 }, style]}>
+      style={({ pressed }) => [styles.shadow, Platform.OS === 'web' && webPressable, { opacity: pressed ? 0.9 : 1 }, style]}>
       <GlassSurface
         radius={Radii.pill}
         style={[
@@ -76,3 +77,5 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.body,
   },
 });
+
+const webPressable = Platform.OS === 'web' ? ({ cursor: 'pointer' } as ViewStyle) : undefined;

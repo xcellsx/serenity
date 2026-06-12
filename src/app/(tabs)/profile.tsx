@@ -16,7 +16,8 @@ import { ScreenBackground } from '@/components/screen-background';
 import { ScreenHeader } from '@/components/screen-header';
 import { TextField } from '@/components/text-field';
 import { BodyText, Heading } from '@/components/typography';
-import { BottomTabInset, Spacing } from '@/constants/theme';
+import { Spacing } from '@/constants/theme';
+import { useBottomTabInset } from '@/hooks/use-bottom-tab-inset';
 import { useTheme } from '@/hooks/use-theme';
 import { getProfile, updateProfile, type Profile } from '@/lib/db';
 import { useMotion } from '@/lib/motion-context';
@@ -24,6 +25,7 @@ import { useThemePreference } from '@/lib/theme-context';
 
 export default function ProfileScreen() {
   const theme = useTheme();
+  const tabInset = useBottomTabInset();
   const { preference, setPreference } = useThemePreference();
   const { setReduceMotion, setHighContrast } = useMotion();
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -82,7 +84,9 @@ export default function ProfileScreen() {
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.flex}>
-        <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          contentContainerStyle={[styles.scroll, { paddingBottom: Spacing.six + Spacing.five + tabInset }]}
+          showsVerticalScrollIndicator={false}>
           <View>
             <ScreenHeader />
 
@@ -224,7 +228,6 @@ const styles = StyleSheet.create({
   scroll: {
     flexGrow: 1,
     paddingHorizontal: Spacing.four,
-    paddingBottom: Spacing.six + Spacing.five + BottomTabInset,
   },
   identity: {
     flexDirection: 'row',

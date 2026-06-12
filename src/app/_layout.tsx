@@ -10,6 +10,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AnimatedIntro } from '@/components/animated-intro';
 import { useStackScreenOptions } from '@/hooks/use-stack-screen-options';
@@ -56,17 +57,19 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <AuthProvider>
-        <ThemePreferenceProvider>
-          {!introDone ? (
-            <AnimatedIntro onDone={() => setIntroDone(true)} />
-          ) : (
-            <MotionProvider>
-              <Navigation />
-            </MotionProvider>
-          )}
-        </ThemePreferenceProvider>
-      </AuthProvider>
+      <SafeAreaProvider>
+        <AuthProvider>
+          <ThemePreferenceProvider>
+            {!introDone ? (
+              <AnimatedIntro onDone={() => setIntroDone(true)} />
+            ) : (
+              <MotionProvider>
+                <Navigation />
+              </MotionProvider>
+            )}
+          </ThemePreferenceProvider>
+        </AuthProvider>
+      </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 }

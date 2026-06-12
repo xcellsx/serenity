@@ -7,17 +7,17 @@ import { ScreenBackground } from '@/components/screen-background';
 import { ScreenHeader } from '@/components/screen-header';
 import { FadingScrollEdge } from '@/components/fading-scroll-edge';
 import { Accent, BodyText, Heading, textStyles } from '@/components/typography';
-import { BottomTabInset, Radii, Spacing } from '@/constants/theme';
+import { Radii, Spacing } from '@/constants/theme';
+import { useBottomTabInset } from '@/hooks/use-bottom-tab-inset';
 import { useTheme } from '@/hooks/use-theme';
 import { deleteTask, getTasksWithProgress, type TaskProgress } from '@/lib/db';
 
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' });
 
-const TAB_CLEARANCE = BottomTabInset + Spacing.six + Spacing.five;
-
 export default function Dashboard() {
   const theme = useTheme();
+  const tabInset = useBottomTabInset();
   const [items, setItems] = useState<TaskProgress[]>([]);
 
   const load = useCallback(() => {
@@ -62,7 +62,7 @@ export default function Dashboard() {
         <FadingScrollEdge style={styles.listWrap}>
           <ScrollView
             style={styles.scroll}
-            contentContainerStyle={styles.list}
+            contentContainerStyle={[styles.list, { paddingBottom: Spacing.six + Spacing.five + tabInset }]}
             showsVerticalScrollIndicator={false}>
             {items.length === 0 ? (
               <BodyText size="caption" style={[textStyles.center, styles.empty, { color: theme.text }]}>
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   title: { marginTop: Spacing.five, marginBottom: Spacing.three },
   listWrap: { flex: 1 },
   scroll: { flex: 1 },
-  list: { gap: Spacing.three, paddingBottom: TAB_CLEARANCE },
+  list: { gap: Spacing.three },
   empty: { marginTop: Spacing.six, opacity: 0.85 },
   card: {
     borderRadius: Radii.md,

@@ -1,14 +1,16 @@
 import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { Animated, Easing, Pressable, StyleSheet, View } from 'react-native';
+import { Animated, Easing, Platform, StyleSheet, View } from 'react-native';
 
+import { HoldPressable } from '@/components/hold-pressable';
 import { MoodOrb } from '@/components/mood-orb';
 import { PillButton } from '@/components/pill-button';
 import { ScreenBackground } from '@/components/screen-background';
 import { ScreenHeader } from '@/components/screen-header';
 import { Accent, BodyText, Heading, textStyles } from '@/components/typography';
 import { MOODS } from '@/constants/moods';
-import { BottomTabInset, Spacing } from '@/constants/theme';
+import { Spacing } from '@/constants/theme';
+import { useBottomTabInset } from '@/hooks/use-bottom-tab-inset';
 import { useTheme } from '@/hooks/use-theme';
 import { addMoodEntry } from '@/lib/db';
 import { useMotion } from '@/lib/motion-context';
@@ -20,6 +22,7 @@ const REDUCED_CYCLE_MS = 2000;
 
 export default function RegulateDone() {
   const theme = useTheme();
+  const tabInset = useBottomTabInset();
   const { reduceMotion } = useMotion();
   const pos = useRef(new Animated.Value(NEUTRAL)).current;
   const scale = useRef(new Animated.Value(1)).current;
@@ -138,17 +141,23 @@ export default function RegulateDone() {
           <BodyText size="heading" style={[textStyles.center, styles.moodLabel, { color: theme.text }]}>
             {MOODS[index].label}
           </BodyText>
-          <Pressable onPressIn={startSweep} onPressOut={endSweep} accessibilityRole="adjustable">
+          <HoldPressable onHoldStart={startSweep} onHoldEnd={endSweep}>
             <Animated.View style={{ transform: [{ scale }] }}>
               <MoodOrb size={300} pos={pos} />
             </Animated.View>
-          </Pressable>
+          </HoldPressable>
           <BodyText size="caption" style={[textStyles.center, styles.hint, { color: theme.text }]}>
-            Press and hold the orb, release when it feels right.
+            {Platform.OS === 'web'
+              ? 'Click and hold the orb, release when it feels right.'
+              : 'Press and hold the orb, release when it feels right.'}
           </BodyText>
         </View>
 
-        <PillButton label="Done" onPress={done} style={styles.cta} />
+        <PillButton
+          label="Done"
+          onPress={done}
+          style={[styles.cta, { marginBottom: Spacing.six + Spacing.five + tabInset }]}
+        />
       </View>
     </ScreenBackground>
   );
@@ -160,5 +169,5 @@ const styles = StyleSheet.create({
   middle: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: Spacing.four },
   moodLabel: { marginBottom: Spacing.one, letterSpacing: 0.5 },
   hint: { opacity: 0.85, maxWidth: 260 },
-  cta: { marginBottom: Spacing.six + Spacing.five + BottomTabInset },
+  cta: {},
 });

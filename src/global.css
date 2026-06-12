@@ -7,3 +7,38 @@
   --font-rounded: 'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif;
   --font-serif: Georgia, 'Times New Roman', serif;
 }
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+/* Remove browser default focus rings — Serenity uses its own glass/accent focus. */
+input,
+textarea,
+select,
+button {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+button:focus,
+[role='button']:focus,
+[tabindex]:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Prevent iOS Safari zoom when focusing inputs. */
+@media screen and (max-width: 768px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}

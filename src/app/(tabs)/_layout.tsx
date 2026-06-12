@@ -4,12 +4,14 @@ import { Tabs } from 'expo-router';
 import { Platform } from 'react-native';
 
 import { Fonts } from '@/constants/theme';
+import { useTabBarLayout } from '@/hooks/use-bottom-tab-inset';
 import { useTabScreenOptions } from '@/hooks/use-tab-screen-options';
 import { useTheme } from '@/hooks/use-theme';
 
 export default function TabsLayout() {
   const theme = useTheme();
   const tabAnimation = useTabScreenOptions();
+  const tabBarLayout = useTabBarLayout();
 
   return (
     <Tabs
@@ -24,8 +26,11 @@ export default function TabsLayout() {
           position: 'absolute',
           borderTopWidth: 0,
           elevation: 0,
-          backgroundColor: Platform.OS === 'ios' ? 'transparent' : theme.background,
-          height: Platform.OS === 'ios' ? 84 : 64,
+          backgroundColor:
+            Platform.OS === 'ios' || Platform.OS === 'web' ? 'transparent' : theme.background,
+          height: tabBarLayout.height,
+          paddingBottom: tabBarLayout.paddingBottom,
+          paddingTop: tabBarLayout.paddingTop,
         },
         tabBarBackground: () => null,
       }}>

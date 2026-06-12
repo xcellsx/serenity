@@ -6,7 +6,8 @@ import { GlassSurface } from '@/components/glass-surface';
 import { ScreenBackground } from '@/components/screen-background';
 import { ScreenHeader } from '@/components/screen-header';
 import { Accent, BodyText, Heading, textStyles } from '@/components/typography';
-import { BottomTabInset, Palette, Radii, Spacing } from '@/constants/theme';
+import { Palette, Radii, Spacing } from '@/constants/theme';
+import { useBottomTabInset } from '@/hooks/use-bottom-tab-inset';
 import { useTheme } from '@/hooks/use-theme';
 
 type Action = {
@@ -41,9 +42,11 @@ function SectionLabel({ children }: { children: string }) {
 }
 
 export default function TasksHubScreen() {
+  const tabInset = useBottomTabInset();
+
   return (
     <ScreenBackground motion="serene">
-      <View style={styles.container}>
+      <View style={[styles.container, { paddingBottom: tabInset + Spacing.two }]}>
         <ScreenHeader />
 
         <Heading size="title" style={[textStyles.center, styles.prompt]}>
@@ -87,7 +90,7 @@ export default function TasksHubScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, paddingHorizontal: Spacing.four, paddingBottom: BottomTabInset + Spacing.two },
+  container: { flex: 1, paddingHorizontal: Spacing.four },
   prompt: { marginTop: Spacing.five, marginBottom: Spacing.four },
   grid: { flex: 1, gap: Spacing.two },
   sectionLabel: { letterSpacing: 1.5, marginTop: Spacing.two, marginBottom: Spacing.one },
