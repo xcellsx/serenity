@@ -11,6 +11,7 @@ type Props = {
 
 type WebPressableProps = React.ComponentProps<typeof Pressable> & {
   dataSet?: { hold?: string };
+  onContextMenu?: (e: { preventDefault: () => void }) => void;
 };
 
 const WebHoldPressable = Pressable as React.ComponentType<WebPressableProps>;

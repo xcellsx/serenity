@@ -7,11 +7,11 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Switch,
   View,
 } from 'react-native';
 
 import { PillButton } from '@/components/pill-button';
+import { SerenitySwitch } from '@/components/serenity-switch';
 import { ScreenBackground } from '@/components/screen-background';
 import { ScreenHeader } from '@/components/screen-header';
 import { TextField } from '@/components/text-field';
@@ -213,12 +213,7 @@ function ToggleRow({
       <BodyText size="body" style={{ color: theme.text }}>
         {label}
       </BodyText>
-      <Switch
-        value={value}
-        onValueChange={onValueChange}
-        trackColor={{ true: theme.accent, false: theme.border }}
-        thumbColor="#fff"
-      />
+      <SerenitySwitch value={value} onValueChange={onValueChange} />
     </View>
   );
 }
