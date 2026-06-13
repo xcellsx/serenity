@@ -10,7 +10,6 @@ import { ScreenHeader } from '@/components/screen-header';
 import { Accent, BodyText, Heading, textStyles } from '@/components/typography';
 import { MOODS } from '@/constants/moods';
 import { Spacing } from '@/constants/theme';
-import { useBottomTabInset } from '@/hooks/use-bottom-tab-inset';
 import { useTheme } from '@/hooks/use-theme';
 import { addMoodEntry } from '@/lib/db';
 import { useMotion } from '@/lib/motion-context';
@@ -22,7 +21,6 @@ const REDUCED_CYCLE_MS = 2000;
 
 export default function MoodScreen() {
   const theme = useTheme();
-  const tabInset = useBottomTabInset();
   const { reduceMotion } = useMotion();
   const pos = useRef(new Animated.Value(NEUTRAL)).current;
   const scale = useRef(new Animated.Value(1)).current;
@@ -145,7 +143,7 @@ export default function MoodScreen() {
           {'\n'}right now?
         </Heading>
 
-        <View style={styles.middle}>
+        <View style={[styles.middle, Platform.OS === 'web' && webNoSelect]}>
           <BodyText size="heading" style={[textStyles.center, styles.moodLabel, { color: theme.text }]}>
             {MOODS[index].label}
           </BodyText>
@@ -164,7 +162,7 @@ export default function MoodScreen() {
         <PillButton
           label={saved ? 'Logged — thank you' : "This is what I'm Feeling"}
           onPress={log}
-          style={[styles.cta, { marginBottom: Spacing.six + Spacing.five + tabInset }]}
+          style={styles.cta}
         />
       </View>
     </ScreenBackground>
@@ -177,5 +175,10 @@ const styles = StyleSheet.create({
   middle: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: Spacing.four },
   moodLabel: { marginBottom: Spacing.one, letterSpacing: 0.5 },
   hint: { opacity: 0.85, maxWidth: 260 },
-  cta: {},
+  cta: { marginBottom: Spacing.six + Spacing.five },
 });
+
+const webNoSelect = {
+  userSelect: 'none',
+  WebkitUserSelect: 'none',
+} as const;

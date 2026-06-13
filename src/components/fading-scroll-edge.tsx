@@ -1,6 +1,6 @@
 import MaskedView from '@react-native-masked-view/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
-import { StyleSheet, View, type ViewStyle } from 'react-native';
+import { Platform, StyleSheet, View, type ViewStyle } from 'react-native';
 
 type Props = {
   children: React.ReactNode;
@@ -8,10 +8,14 @@ type Props = {
 };
 
 /**
- * Fades scroll content to transparent near the bottom — tasks ghost out
- * behind the tab bar instead of sitting under a solid color band.
+ * Fades scroll content to transparent near the bottom — native only.
+ * MaskedView is unreliable on web (can hide content entirely).
  */
 export function FadingScrollEdge({ children, style }: Props) {
+  if (Platform.OS === 'web') {
+    return <View style={[styles.fill, style]}>{children}</View>;
+  }
+
   return (
     <MaskedView
       style={[styles.fill, style]}

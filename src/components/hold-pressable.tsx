@@ -1,4 +1,4 @@
-import { Platform, Pressable, View, type StyleProp, type ViewStyle } from 'react-native';
+import { Platform, Pressable, type StyleProp, type ViewStyle } from 'react-native';
 import { useRef } from 'react';
 
 type Props = {
@@ -9,16 +9,14 @@ type Props = {
   accessibilityLabel?: string;
 };
 
-type WebPointerEvent = {
-  preventDefault: () => void;
-  pointerId?: number;
-  buttons?: number;
-  currentTarget: unknown;
+type WebPressableProps = React.ComponentProps<typeof Pressable> & {
+  dataSet?: { hold?: string };
 };
 
+const WebHoldPressable = Pressable as React.ComponentType<WebPressableProps>;
+
 /**
- * Press-and-hold that works on native touch and web pointer events
- * (mouse down/up, touch, pointer capture).
+ * Press-and-hold on native; on web blocks text selection / iOS callout menus.
  */
 export function HoldPressable({
   onHoldStart,
@@ -42,30 +40,36 @@ export function HoldPressable({
   };
 
   if (Platform.OS === 'web') {
-    const webHandlers = {
-      onPointerDown: (e: WebPointerEvent) => {
-        e.preventDefault();
-        const target = e.currentTarget as HTMLElement;
-        if (typeof e.pointerId === 'number') {
-          target.setPointerCapture?.(e.pointerId);
-        }
-        start();
-      },
-      onPointerUp: end,
-      onPointerCancel: end,
-      onPointerLeave: (e: WebPointerEvent) => {
-        if (e.buttons === 0) end();
-      },
-    };
-
     return (
-      <View
+      <WebHoldPressable
         accessibilityRole="button"
         accessibilityLabel={accessibilityLabel}
         style={[style, webHoldStyle]}
-        {...(webHandlers as object)}>
+        dataSet={{ hold: 'true' }}
+        onPressIn={start}
+        onPressOut={end}
+        onTouchStart={(e) => {
+          e.preventDefault();
+          start();
+        }}
+        onTouchEnd={(e) => {
+          e.preventDefault();
+          end();
+        }}
+        onTouchCancel={end}
+        onContextMenu={(e) => e.preventDefault()}
+        onPointerDown={(e) => {
+          e.preventDefault();
+          const target = e.currentTarget as unknown as HTMLElement;
+          if (typeof e.nativeEvent.pointerId === 'number') {
+            target.setPointerCapture?.(e.nativeEvent.pointerId);
+          }
+          start();
+        }}
+        onPointerUp={end}
+        onPointerCancel={end}>
         {children}
-      </View>
+      </WebHoldPressable>
     );
   }
 
@@ -85,4 +89,6 @@ const webHoldStyle = {
   cursor: 'pointer',
   touchAction: 'none',
   userSelect: 'none',
+  WebkitUserSelect: 'none',
+  WebkitTouchCallout: 'none',
 } as ViewStyle;

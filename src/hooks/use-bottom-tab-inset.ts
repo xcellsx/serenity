@@ -6,8 +6,10 @@ const TAB_BAR_HEIGHT = Platform.select({ ios: 49, android: 56, web: 56, default:
 /** Space to leave above the floating tab bar (includes home-indicator / Safari chrome). */
 export function useBottomTabInset() {
   const { bottom } = useSafeAreaInsets();
-  const extra = Platform.OS === 'web' ? 12 : 0;
-  return TAB_BAR_HEIGHT + bottom + extra;
+  // Web safe-area can report large values — cap so content doesn't float too high.
+  const safeBottom =
+    Platform.OS === 'web' ? Math.min(bottom, 34) : bottom;
+  return TAB_BAR_HEIGHT + safeBottom;
 }
 
 export function useTabBarLayout() {

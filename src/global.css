@@ -34,6 +34,15 @@ button:focus,
   box-shadow: none !important;
 }
 
+/* Hold interactions — no text selection or iOS callout on orb areas. */
+[data-hold='true'],
+[data-hold='true'] * {
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+  touch-action: none !important;
+}
+
 /* Prevent iOS Safari zoom when focusing inputs. */
 @media screen and (max-width: 768px) {
   input,
